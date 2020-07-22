@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="typing.css">
+</head>
+
+<body>
+    <div class="box">
+        <div class="start">
+            <span>开始游戏</span>
+        </div>
+        <div class="grade">
+            <span>积分</span>
+            <div class="grades"></div>
+        </div>
+        <div class="life">
+            <span>生命值</span>
+            <div class="lifes"></div>
+        </div>
+        <div class="stop">
+            <span>停止游戏</span>
+        </div>
+        <div class="menu">
+            <div class="back">
+                <span>上一关</span>
+            </div>
+            <div class="restart">
+                <span>重新开始</span>
+            </div>
+            <div class="next">
+                <span>下一关</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+        var divs = [];
+        var box = document.querySelector(".box");
+
+        function create(num) {
+            var current = [];
+            for (var i = 0; i < num; i++) {
+                current.push(letters[Math.floor(letters.length * Math.random())]);
+            }
+
+            for (var i = 0; i < current.length; i++) {
+                var div = document.createElement("div");
+                div.innerHTML = current[i];
+                div.style.cssText = "position:absolute;left:" + document.documentElement.clientWidth * Math.random() + "px;top:" + (40 * Math.random()) + "px;font-size:" + 8 + 10 * Math.random() + "px;"
+                box.appendChild(div);
+                divs.push(div);
+            }
+        }
+        //开始游戏
+        var start = document.querySelector(".start");
+        var grade = document.querySelector(".grade");
+        var life = document.querySelector(".life");
+        start.onclick = function () {
+            start.style.display = "none";
+            grade.style.display = "block";
+            life.style.display = "block";
+            stop.style.display = "block";
+            create(4);
+        }
+        
+        var speed = 5;
+        var lifes = document.querySelector(".lifes");
+        function typing() {
+            for (var i = 0; i < divs.length; i++) {
+                divs[i].style.top = divs[i].offsetTop + speed + "px";
+                if (divs[i].offsetTop+speed > 720) {
+                    box.removeChild(divs[i])
+                    divs.splice(i, 1);
+                    create(1);
+                }
+            }
+        }
+        var t = setInterval(typing, 50);
+
+        var score = 0;
+        var lifeScore = 100;
+        lifes.innerHTML = lifeScore;
+        var grades = document.querySelector(".grades");
+
+        document.onkeydown = function (ev) {
+            var letter = String.fromCharCode(ev.keyCode);
+            for (var i = 0; i < divs.length; i++) {
+                if (divs[i].innerHTML == letter) {
+                    score += 5;
+                    grades.innerHTML=score;
+                    box.removeChild(divs[i]);
+                    divs.splice(i, 1);
+                    create(1);
+                    break;
+                }
+            }
+        }
+
+        //停止游戏
+        var stop = document.querySelector(".stop");
+        var menu = document.querySelector(".menu");
+        stop.onclick = function () {
+            clearInterval(t);
+            menu.style.display = "block";
+            clearInterval(p);
+        }
+
+        //重新开始
+        var restart = document.querySelector(".restart");
+        restart.onclick = function () {
+            window.location.reload(true);
+        }
+
+        //下一关
+        var next = document.querySelector(".next");
+        next.onclick = function (){
+            menu.style.display = "none";
+            speed = 10;
+            create(1);
+            p=setInterval(typing, 50);
+        }
+
+        //上一关
+        var back = document.querySelector(".back");
+        back.onclick = function (){
+            menu.style.display = "none";
+            speed = 5;
+            t=setInterval(typing, 50);
+        }
+
+    </script>
+</body>
+
+</html>
